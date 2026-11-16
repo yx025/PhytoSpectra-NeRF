@@ -15,8 +15,7 @@ four float reflectance values (R, G, B, NIR) and a surface normal per point.
 This repository contains only the code needed to preprocess data, train the model, and export
 point clouds. It does not contain data, trained models, or results.
 
-The code is built on [Nerfstudio](https://github.com/nerfstudio-project/nerfstudio) v1.0.2 and the
-[ThermalNeRF](https://arxiv.org/abs/2407.15337) fork of it. The `nerfstudio/` package is included
+The code is built on [Nerfstudio](https://github.com/nerfstudio-project/nerfstudio) v1.0.2. The `nerfstudio/` package is included
 so that the repository runs after one `pip install -e .`.
 
 ---
