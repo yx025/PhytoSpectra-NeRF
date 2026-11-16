@@ -110,7 +110,7 @@ little-endian uint16 image. The two sources of one frame share one camera pose.
 A scene folder after all preprocessing steps:
 
 ```
-data/JAI/5.8/1.cucumber1p/
+data/JAI/5.8/1.cucumber/
 ├── Source0_*.raw, Source1_*.raw    # captured frames
 ├── black/                          # dark frames (lens covered) + black_level.json
 ├── panel_roi.json                  # calibration-panel region
@@ -123,7 +123,7 @@ data/JAI/5.8/1.cucumber1p/
 
 ## Workflow
 
-All commands are run from the repository root. The example scene is `data/JAI/5.8/1.cucumber1p`.
+All commands are run from the repository root. The example scene is `data/JAI/5.8/1.cucumber`.
 
 ### 1. Pick the calibration-panel region (once per scene, on a machine with a display)
 
@@ -136,22 +136,22 @@ from pathlib import Path
 from nerfstudio.process_data.jai_utils import load_jai_raw
 for p in sys.argv[1:]:
     img, _ = load_jai_raw(Path(p)); np.save(Path(p).with_suffix('.npy'), img)
-" data/JAI/5.8/1.cucumber1p/Source0_000000_2048x1536_16b.raw \
-  data/JAI/5.8/1.cucumber1p/Source1_000000_2048x1536_16b.raw
+" data/JAI/5.8/1.cucumber/Source0_000000_2048x1536_16b.raw \
+  data/JAI/5.8/1.cucumber/Source1_000000_2048x1536_16b.raw
 ```
 
 Then click the top-left and bottom-right corners of the panel in each image:
 
 ```bash
 python scripts/jai_pick_panel_roi_local.py \
-    --npy  data/JAI/5.8/1.cucumber1p/Source0_000000_2048x1536_16b.npy \
+    --npy  data/JAI/5.8/1.cucumber/Source0_000000_2048x1536_16b.npy \
     --kind bayer \
-    --out  data/JAI/5.8/1.cucumber1p/panel_roi.json
+    --out  data/JAI/5.8/1.cucumber/panel_roi.json
 
 python scripts/jai_pick_panel_roi_local.py \
-    --npy  data/JAI/5.8/1.cucumber1p/Source1_000000_2048x1536_16b.npy \
+    --npy  data/JAI/5.8/1.cucumber/Source1_000000_2048x1536_16b.npy \
     --kind nir \
-    --out  data/JAI/5.8/1.cucumber1p/panel_roi.json
+    --out  data/JAI/5.8/1.cucumber/panel_roi.json
 ```
 
 Both calls write into the same JSON file. The nominal panel reflectance defaults to 0.95 for
@@ -163,19 +163,19 @@ that the scene folder holds only `.raw` frames.
 
 ```bash
 python scripts/jai_estimate_black_level.py \
-    --scene "data/JAI/5.8/1.cucumber1p/black" \
-    --out   "data/JAI/5.8/1.cucumber1p/black/black_level.json"
+    --scene "data/JAI/5.8/1.cucumber/black" \
+    --out   "data/JAI/5.8/1.cucumber/black/black_level.json"
 ```
 
 ### 3. Make JPGs for COLMAP
 
 ```bash
 python scripts/jai_source0_to_jpg_wb.py \
-    --input-dir  "data/JAI/5.8/1.cucumber1p" \
-    --output-dir "data/JAI/5.8/1.cucumber1p/jpg" \
+    --input-dir  "data/JAI/5.8/1.cucumber" \
+    --output-dir "data/JAI/5.8/1.cucumber/jpg" \
     --input-ext  raw \
     --wb-mode    panel \
-    --panel-roi  "data/JAI/5.8/1.cucumber1p/panel_roi.json" \
+    --panel-roi  "data/JAI/5.8/1.cucumber/panel_roi.json" \
     --gamma      1.5
 ```
 
@@ -189,20 +189,20 @@ Then pass the scene folder:
 
 ```bash
 # one continuous orbit: sequential matching
-./run_colmap_fixed_intrinsics_me.sh data/JAI/5.8/1.cucumber1p
+./run_colmap_fixed_intrinsics_me.sh data/JAI/5.8/1.cucumber
 
 # several orbits (for example two rings at different heights): exhaustive matching
-./run_colmap_fixed_intrinsics.sh data/JAI/5.8/1.cucumber1p
+./run_colmap_fixed_intrinsics.sh data/JAI/5.8/1.cucumber
 ```
 
-The result is `data/JAI/5.8/1.cucumber1p/colmap_out/transforms.json`.
+The result is `data/JAI/5.8/1.cucumber/colmap_out/transforms.json`.
 
 Optional checks before training:
 
 ```bash
 python scripts/jai_pose_precheck.py --root data/JAI/5.8        # pose quality of every scene under the folder
-python scripts/jai_flag_bad_frames.py --scene data/JAI/5.8/1.cucumber1p            # list bad frames
-python scripts/jai_flag_bad_frames.py --scene data/JAI/5.8/1.cucumber1p --apply    # move them to excluded_frames/
+python scripts/jai_flag_bad_frames.py --scene data/JAI/5.8/1.cucumber            # list bad frames
+python scripts/jai_flag_bad_frames.py --scene data/JAI/5.8/1.cucumber --apply    # move them to excluded_frames/
 ```
 
 Frames that COLMAP did not register should be removed: the dataparser gives an unmatched
@@ -212,10 +212,10 @@ frame an identity pose and would still train on it.
 
 ```bash
 python scripts/jai_compute_reflectance.py \
-    --scene       data/JAI/5.8/1.cucumber1p \
-    --out         data/JAI/5.8/1.cucumber1p/reflectance \
-    --panel-roi   data/JAI/5.8/1.cucumber1p/panel_roi.json \
-    --black-level data/JAI/5.8/1.cucumber1p/black/black_level.json \
+    --scene       data/JAI/5.8/1.cucumber \
+    --out         data/JAI/5.8/1.cucumber/reflectance \
+    --panel-roi   data/JAI/5.8/1.cucumber/panel_roi.json \
+    --black-level data/JAI/5.8/1.cucumber/black/black_level.json \
     --file-ext    raw
 ```
 
@@ -233,10 +233,10 @@ nohup env CUDA_VISIBLE_DEVICES=3 ns-train jai-nerfacto \
   --pipeline.model.orientation-loss-mult 0.0001 \
   --pipeline.model.pred-normal-loss-mult 0.001 \
   jai-data \
-  --data "data/JAI/5.8/1.cucumber1p/reflectance" \
+  --data "data/JAI/5.8/1.cucumber/reflectance" \
   --file-ext npy \
   --intensity-mode reflectance \
-  --poses-source "data/JAI/5.8/1.cucumber1p/colmap_out" \
+  --poses-source "data/JAI/5.8/1.cucumber/colmap_out" \
   > 5.8_cucumber1p_reflectance.log 2>&1 &
 ```
 
@@ -249,11 +249,11 @@ nohup env CUDA_VISIBLE_DEVICES=2 ns-train jai-nerfacto \
   --pipeline.model.orientation-loss-mult 0.0001 \
   --pipeline.model.pred-normal-loss-mult 0.001 \
   jai-data \
-  --data "data/JAI/5.8/1.cucumber1p" \
+  --data "data/JAI/5.8/1.cucumber" \
   --file-ext raw \
   --intensity-mode dn \
-  --poses-source "data/JAI/5.8/1.cucumber1p/colmap_out" \
-  > 5.8_cucumber1p_dn.log 2>&1 &
+  --poses-source "data/JAI/5.8/1.cucumber/colmap_out" \
+  > 5.8_cucumber_dn.log 2>&1 &
 ```
 
 Training writes to `outputs/unnamed/jai-nerfacto/<timestamp>/`. The default length is
@@ -272,7 +272,7 @@ ns-viewer --load-config outputs/unnamed/jai-nerfacto/<timestamp>/config.yml
 ```bash
 CUDA_VISIBLE_DEVICES=0 python scripts/jai_export_4ch_reflectance_pointcloud.py \
   --load-config outputs/unnamed/jai-nerfacto/<timestamp>/config.yml \
-  --output exports/pcd/5.8/cucumber1p/refl_4ch.ply \
+  --output exports/pcd/5.8/cucumber/refl_4ch.ply \
   --num-points 3000000 \
   --remove-outliers \
   --obb-center   0.0000000000 0.0000000000 -1.0000000000 \
