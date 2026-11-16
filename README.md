@@ -392,6 +392,6 @@ python scripts/8.test_jai_poses.py      <scene> --poses-source <scene>/colmap_ou
 Released under the Apache License 2.0 (see `LICENSE`).
 
 This work builds on [Nerfstudio](https://github.com/nerfstudio-project/nerfstudio)
-(Tancik et al., 2023) and [ThermalNeRF](https://arxiv.org/abs/2407.15337) (Lin et al., 2024).
+(Tancik et al., 2023).
 The files listed under *Repository layout* were added or modified for the JAI dual-source
 pipeline; the rest of the `nerfstudio/` package is their work.
