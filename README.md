@@ -15,7 +15,8 @@ four float reflectance values (R, G, B, NIR) and a surface normal per point.
 This repository contains only the code needed to preprocess data, train the model, and export
 point clouds. It does not contain data, trained models, or results.
 
-The code is built on [Nerfstudio](https://github.com/nerfstudio-project/nerfstudio) v1.0.2. The `nerfstudio/` package is included
+The code is built on [Nerfstudio](https://github.com/nerfstudio-project/nerfstudio) v1.0.2 and the
+[ThermalNeRF](https://arxiv.org/abs/2407.15337) fork of it. The `nerfstudio/` package is included
 so that the repository runs after one `pip install -e .`.
 
 ---
@@ -43,7 +44,7 @@ so that the repository runs after one `pip install -e .`.
 | `scripts/jai_export_embfix*.py`, `jai_embfix_common.py`, `jai_embfix_validate.py` | Embedding-corrected reflectance export and its validation |
 | `scripts/1.test_jai_raw.py` … `8.test_jai_poses.py` | Step-by-step tests of each layer |
 
-The other Nerfstudio methods ship unchanged as part of the package; they are
+The other Nerfstudio and ThermalNeRF methods ship unchanged as part of the package; they are
 not the subject of this repository.
 
 ---
@@ -392,6 +393,6 @@ python scripts/8.test_jai_poses.py      <scene> --poses-source <scene>/colmap_ou
 Released under the Apache License 2.0 (see `LICENSE`).
 
 This work builds on [Nerfstudio](https://github.com/nerfstudio-project/nerfstudio)
-(Tancik et al., 2023).
+(Tancik et al., 2023) and [ThermalNeRF](https://arxiv.org/abs/2407.15337) (Lin et al., 2024).
 The files listed under *Repository layout* were added or modified for the JAI dual-source
 pipeline; the rest of the `nerfstudio/` package is their work.
