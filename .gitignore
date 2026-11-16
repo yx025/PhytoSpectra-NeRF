@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.ipynb_checkpoints/
+
+# Data, poses and preprocessing products (never commit)
+/data/
+*.raw
+*.npy
+*.npz
+panel_roi.json
+black_level.json
+
+# Training and export results (never commit)
+/outputs/
+/exports/
+/renders/
+/debug_previews/
+/eval_debug/
+*.ckpt
+*.ply
+*.log
+nohup.out
+events.out.tfevents.*
+
+# Local tooling
+.claude/
+.vscode/
+.idea/
+.DS_Store
