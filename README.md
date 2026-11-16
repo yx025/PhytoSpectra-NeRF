@@ -43,7 +43,7 @@ so that the repository runs after one `pip install -e .`.
 | `scripts/jai_export_embfix*.py`, `jai_embfix_common.py`, `jai_embfix_validate.py` | Embedding-corrected reflectance export and its validation |
 | `scripts/1.test_jai_raw.py` … `8.test_jai_poses.py` | Step-by-step tests of each layer |
 
-The other Nerfstudio and ThermalNeRF methods ship unchanged as part of the package; they are
+The other Nerfstudio methods ship unchanged as part of the package; they are
 not the subject of this repository.
 
 ---
